@@ -1,13 +1,6 @@
 # find-your-ex
 
-A command-line tool that recursively scans a directory for `.exe` files, displays them in a colourful, well-formatted table, and lets you delete them — all at once or selectively.
-
-Two versions are included:
-
-| File | Platform | Requirements |
-|------|----------|--------------|
-| `ex-finder.ps1` | Windows | PowerShell 5.1+ (built into Windows 10/11) |
-| `find_exe.sh` | Linux / macOS / WSL | Bash 4+ |
+A Windows command-line tool that recursively scans a directory for `.exe` files, displays them in a colourful, well-formatted table, and lets you delete them — all at once or selectively.
 
 ---
 
@@ -25,7 +18,7 @@ Two versions are included:
 
 ---
 
-## Quick Start (Windows)
+## Quick Start
 
 1. Download `ex-finder.ps1`
 2. Open **PowerShell** or **Windows Terminal**
@@ -46,23 +39,7 @@ Two versions are included:
 
 ---
 
-## Quick Start (Linux / macOS / WSL)
-
-1. Download `find_exe.sh`
-2. Make it executable:
-   ```bash
-   chmod +x find_exe.sh
-   ```
-3. Run it:
-   ```bash
-   ./find_exe.sh /home/yourname
-   ```
-
----
-
 ## Usage
-
-### PowerShell (Windows)
 
 ```
 .\ex-finder.ps1 [-Path <directory>] [-ShowDate] [-SortSize] [-Help]
@@ -88,36 +65,6 @@ Two versions are included:
 
 # Show help
 .\ex-finder.ps1 -Help
-```
-
----
-
-### Bash (Linux / macOS / WSL)
-
-```
-./find_exe.sh [-d] [-s] [-h] [directory]
-```
-
-| Flag | Description | Default |
-|------|-------------|---------|
-| `-d` | Show last-modified date column | Off |
-| `-s` | Sort by file size, largest first | Off (sorted by path) |
-| `-h` | Show help and exit | — |
-| (positional) | Directory to scan | Current directory (`.`) |
-
-**Examples:**
-```bash
-# Scan a specific folder
-./find_exe.sh /home/yourname
-
-# With dates, sorted by size
-./find_exe.sh -d -s /opt
-
-# Scan the whole system (may be slow)
-./find_exe.sh /
-
-# On WSL — scan your Windows C: drive
-./find_exe.sh /mnt/c/Users/YourName
 ```
 
 ---
@@ -204,15 +151,9 @@ Closes the script without touching any files.
 
 ## Requirements
 
-### PowerShell version (`ex-finder.ps1`)
 - Windows 10 or Windows 11
 - Windows PowerShell 5.1 (pre-installed) **or** PowerShell 7+
 - No third-party modules required
-
-### Bash version (`find_exe.sh`)
-- Bash 4.0 or later
-- Standard Unix utilities: `find`, `stat`, `sort`, `wc`, `mktemp`
-- Available on Linux, macOS, and WSL (Windows Subsystem for Linux)
 
 ---
 
@@ -221,7 +162,6 @@ Closes the script without touching any files.
 ```
 find-your-ex/
 ├── ex-finder.ps1       # Windows PowerShell script
-├── find_exe.sh         # Linux / macOS / WSL Bash script
 └── README.md           # This file
 ```
 
@@ -229,8 +169,8 @@ find-your-ex/
 
 ## Tips
 
-- **Run as Administrator** (Windows) or with `sudo` (Linux) if you want to scan system directories that are normally restricted.
-- Scanning the root of a large drive (`C:\` or `/`) can take a minute or two depending on the number of files.
+- **Run as Administrator** if you want to scan system directories that are normally restricted.
+- Scanning the root of a large drive (`C:\`) can take a minute or two depending on the number of files.
 - The `-SortSize` flag is useful for quickly identifying the largest executables to free up the most disk space.
 - Deleted files **do not go to the Recycle Bin** — they are permanently removed. Use the select option (`S`) if you want to review before deleting.
 
