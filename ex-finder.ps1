@@ -9,6 +9,7 @@ param(
     [string] $Path     = ".",
     [switch] $ShowDate,
     [switch] $SortSize,
+    [switch] $NoRecurse,
     [switch] $Help
 )
 
@@ -76,17 +77,18 @@ function Show-Banner {
 function Show-Help {
     Show-Banner
     Write-Host "  USAGE" -ForegroundColor White
-    Write-Host "    .\Find-ExeFiles.ps1 [-Path <dir>] [-ShowDate] [-SortSize] [-Help]" -ForegroundColor Cyan
+    Write-Host "    .\Find-ExeFiles.ps1 [-Path <dir>] [-ShowDate] [-SortSize] [-NoRecurse] [-Help]" -ForegroundColor Cyan
     Write-Host ""
     Write-Host "  PARAMETERS" -ForegroundColor White
-    Write-Host "    -Path      Directory to scan (default: current directory)" -ForegroundColor Gray
-    Write-Host "    -ShowDate  Show last-modified date column" -ForegroundColor Gray
-    Write-Host "    -SortSize  Sort results by size, largest first" -ForegroundColor Gray
-    Write-Host "    -Help      Show this help message" -ForegroundColor Gray
+    Write-Host "    -Path       Directory to scan (default: current directory)" -ForegroundColor Gray
+    Write-Host "    -ShowDate   Show last-modified date column" -ForegroundColor Gray
+    Write-Host "    -SortSize   Sort results by size, largest first" -ForegroundColor Gray
+    Write-Host "    -NoRecurse  Only search the specified folder, do not search subfolders" -ForegroundColor Gray
+    Write-Host "    -Help       Show this help message" -ForegroundColor Gray
     Write-Host ""
     Write-Host "  EXAMPLES" -ForegroundColor White
     Write-Host "    .\ex-finder.ps1" -ForegroundColor DarkGray
-    Write-Host "    .\ex-finder.ps1 -Path C:\Users\YourName" -ForegroundColor DarkGray
+    Write-Host "    .\ex-finder.ps1 -Path C:\Users\YourName -NoRecurse" -ForegroundColor DarkGray
     Write-Host "    .\ex-finder.ps1 -Path C:\ -ShowDate -SortSize" -ForegroundColor DarkGray
     Write-Host ""
     exit 0
@@ -117,9 +119,14 @@ Write-Host "  Show dates: " -NoNewline -ForegroundColor DarkGray
 if ($ShowDate) { Write-Host "yes" -ForegroundColor White }
 else           { Write-Host "no"  -ForegroundColor White }
 
+
 Write-Host "  Sort order: " -NoNewline -ForegroundColor DarkGray
 if ($SortSize) { Write-Host "by size (largest first)" -ForegroundColor White }
 else           { Write-Host "by path"                 -ForegroundColor White }
+
+Write-Host "  Recursive  : " -NoNewline -ForegroundColor DarkGray
+if ($NoRecurse) { Write-Host "no (only this folder)" -ForegroundColor White }
+else            { Write-Host "yes (all subfolders)"  -ForegroundColor White }
 Write-Host ""
 
 # ─── Scan ─────────────────────────────────────────────────────────
@@ -129,9 +136,13 @@ Write-Host ""
 $permErrors = 0
 $files      = [System.Collections.Generic.List[System.IO.FileInfo]]::new()
 
-Get-ChildItem -Path $SearchDir -Filter "*.exe" -Recurse -File `
-    -ErrorAction SilentlyContinue -ErrorVariable scanErrors |
-    ForEach-Object { $files.Add($_) }
+if ($NoRecurse) {
+    Get-ChildItem -Path $SearchDir -Filter "*.exe" -File -ErrorAction SilentlyContinue -ErrorVariable scanErrors |
+        ForEach-Object { $files.Add($_) }
+} else {
+    Get-ChildItem -Path $SearchDir -Filter "*.exe" -Recurse -File -ErrorAction SilentlyContinue -ErrorVariable scanErrors |
+        ForEach-Object { $files.Add($_) }
+}
 
 $permErrors = $scanErrors.Count
 
